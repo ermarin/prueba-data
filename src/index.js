@@ -1,13 +1,44 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
+import { Provider } from 'react-redux';
+import { createStore } from 'redux';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { ChakraProvider } from '@chakra-ui/react';
 import reportWebVitals from './reportWebVitals';
+
+import Home from './screens/Home';
+import Login from './screens/Login';
+
+let store = createStore(users, ['user']);
+
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: (<Login store={store} />)
+  },
+  {
+    path: '/home',
+    element: (<Home store={store} />)
+  }
+]);
+
+function users(state = [], action) {
+  switch(action.type) {
+    case 'ADD_USER':
+      return state.concat([ action.text ])
+    default:
+      return state
+  }
+}
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <Provider store={store}>
+      <ChakraProvider>
+        <RouterProvider router={router} />
+      </ChakraProvider>
+    </Provider>
   </React.StrictMode>
 );
 
